@@ -1,14 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager
- 
-login = LoginManager()
+
 db = SQLAlchemy()
 
-@login.user_loader
-def load_user(id):
-    return UserModel.query.get(int(id))
 
 # class User(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
@@ -29,36 +22,30 @@ def load_user(id):
 favorite_characters = db.Table(
     "favorite_characters",
 
-    db.Column("user_id", db.ForeignKey("users.id")),
-    db.Column("character_id", db.ForeignKey("characters.id")),
+    db.Column("user_id", db.ForeignKey("User.id")),
+    db.Column("character_id", db.ForeignKey("Characters.id")),
 )
 
 favorite_planets = db.Table(
     "favorite_planets",
    
-    db.Column("user_id", db.ForeignKey("users.id")),
-    db.Column("planet_id", db.ForeignKey("planets.id")),
+    db.Column("user_id", db.ForeignKey("User.id")),
+    db.Column("planet_id", db.ForeignKey("Planets.id")),
 )
 favorite_starships = db.Table(
     "favorite_starships",
 
-    db.Column("user_id", db.ForeignKey("users.id")),
-    db.Column("starship_id", db.ForeignKey("starships.id")),
+    db.Column("user_id", db.ForeignKey("User.id")),
+    db.Column("starship_id", db.ForeignKey("Starships.id")),
 )
     
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'Users'
     id = db.Column(db.Integer, primary_key=True)
 
     name = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), nullable=False)
-    password_hash = db.Column(db.String())
- 
-    def set_password(self,password):
-        self.password_hash = generate_password_hash(password)
-     
-    def check_password(self,password):
-        return check_password_hash(self.password_hash,password)
+    password = db.Column(db.String())
 
     favorite_characters = db.relationship('Characters',secondary=favorite_characters)
     favorite_planets = db.relationship('Planets',secondary=favorite_planets)
@@ -79,7 +66,7 @@ class User(db.Model):
         }
 
 class Characters(db.Model):
-    __tablename__ = 'characters'
+    __tablename__ = 'Characters'
     id = db.Column(db.Integer, primary_key=True)
 
     name = db.Column(db.String(250), nullable=False)
@@ -101,7 +88,7 @@ class Characters(db.Model):
         }
 
 class Planets(db.Model):
-    __tablename__ = 'planets'
+    __tablename__ = 'Planets'
     id = db.Column(db.Integer, primary_key=True)
 
 
@@ -124,7 +111,7 @@ class Planets(db.Model):
         }
     
 class Starships(db.Model):
-    __tablename__ = 'starships'
+    __tablename__ = 'Starships'
     id = db.Column(db.Integer, primary_key=True)
 
     model = db.Column(db.String(250), nullable=False)

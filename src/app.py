@@ -77,22 +77,20 @@ def handle_login():
     return jsonify(payload), 200
 
 #       !!--SIGN-UP--!!
-@api.route('/signup', methods=['POST'])
+@app.route('/signup', methods=['POST'])
 def handle_signup():
     body = request.json # get the request body content
     email = request.json.get('email')
-    fname = request.json.get('fname')
-    lname = request.json.get('lname')
+    name = request.json.get('name')
+
     password = request.json.get('password')
     
     if body is None:
         return "The request body is null", 400
     if not email:
         return 'You need to enter an email',400
-    if not fname:
-        return 'You need to enter an fname',400
-    if not lname:
-        return 'You need to enter an lname',400
+    if not name:
+        return 'You need to enter an name',400
     if not password:
         return 'You need to enter a password', 400
     check_user = User.query.filter_by(email=email).first()
@@ -102,7 +100,7 @@ def handle_signup():
             'msg': 'The email address already exists. Please login to your account to continue.'
         }),409
 
-    user = User(email=email, fname=fname, lname=lname, password=password, is_active=True)
+    user = User(email=email, name=name, password=password, is_active=True)
 
     db.session.add(user)
     db.session.commit()
